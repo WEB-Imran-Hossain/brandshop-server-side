@@ -29,6 +29,7 @@ async function run() {
         await client.connect();
 
         const productCollection = client.db('productDB').collection('product');
+        const cartDataCollection = client.db('cartDB').collection('cart')
 
         app.get('/product', async (req, res) => {
             const cursor = productCollection.find();
@@ -141,18 +142,45 @@ async function run() {
         app.post("/cart", async (req, res) => {
             const myCart = req.body;
             console.log(myCart);
-            const result = await productCollection.insertOne(myCart);
+            const result = await cartDataCollection.insertOne(myCart);
             res.send(result);
         });
 
-        // cart method
+        // cart get method
         app.get("/cart", async (req, res) => {
-            const cursor = productCollection.find();
+            const cursor = cartDataCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         });
 
+        // card delete method
+        app.delete("/cart/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await cartDataCollection.deleteOne(query);
+            res.send(result);
+        });
 
+        // update data
+        app.put('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const newProductData = req.body;
+            const product = {
+                $set: {
+                    name: newProductData.name,
+                    image: newProductData.image,
+                    price: newProductData.price,
+                    rating: newProductData.rating,
+                    description: newProductData.description,
+                    brand: newProductData.brand,
+                    category: newProductData.category,
+                }
+            }
+            const result = await productCollection.updateOne(filter, product, options)
+            res.send(result)
+        })
 
 
 
