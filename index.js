@@ -10,8 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.yshawkz.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -36,18 +34,19 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+
         // geting loreal product
-        app.get('/product/loreal', async (req, res) => {
+        // app.get('/product/loreal', async (req, res) => {
 
-            try {
-                const products = await productCollection.find({ brand: "Loreal" }).toArray();
+        //     try {
+        //         const products = await productCollection.find({ brand: "Loreal" }).toArray();
 
-                res.json(products);
-            } catch (error) {
-                console.error('Error finding products:', error);
-                res.status(500).json({ error: 'Internal server error' });
-            }
-        });
+        //         res.json(products);
+        //     } catch (error) {
+        //         console.error('Error finding products:', error);
+        //         res.status(500).json({ error: 'Internal server error' });
+        //     }
+        // });
 
         // geting loreal product
         app.get('/product/loreal', async (req, res) => {
@@ -128,7 +127,7 @@ async function run() {
             }
         });
 
-        // geting indivisual product
+        // geting indvisual product
         app.get("/product/:id", async (req, res) => {
             const id = req.params.id;
             console.log(id);
@@ -182,8 +181,6 @@ async function run() {
             res.send(result)
         })
 
-
-
         app.post('/product', async (req, res) => {
             const newProduct = req.body;
             console.log(newProduct);
@@ -200,30 +197,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // root
 app.get('/', (req, res) => {
